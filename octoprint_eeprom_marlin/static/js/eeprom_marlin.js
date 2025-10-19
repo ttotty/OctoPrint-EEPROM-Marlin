@@ -129,7 +129,8 @@ $(function () {
         ["I", "T"]
       );
 
-      eeprom.input_shaping = create_eeprom_observables(["D", "F"]);
+      eeprom.input_shaping_x = create_eeprom_observables(["D", "F"]);
+      eeprom.input_shaping_y = create_eeprom_observables(["D", "F"]);
 
       return eeprom;
     })();
@@ -163,10 +164,10 @@ $(function () {
             } catch {
               console.log(
                 "unable to empty switched array for " +
-                  key +
-                  " (" +
-                  sw.charAt(0) +
-                  ")"
+                key +
+                " (" +
+                sw.charAt(0) +
+                ")"
               );
             }
           });
