@@ -24,7 +24,7 @@
                 <button data-bind="click: function(){ $parent.delete_backup(name) }, enable: $root.enableSave" class="btn btn-small btn-danger" title="Delete Backup">
                     <i class="fa fa-fw fa-trash-o"></i>
                 </button>
-                <a data-bind="attr: {href: '/plugin/eeprom_marlin/download/' + name}, visible: $root.loginState.hasPermission($root.access.permissions.PLUGIN_EEPROM_MARLIN_READ)" class="btn btn-small" title="Download Backup">
+                <a data-bind="attr: {href: '/plugin/eeprom_marlin/download/' + name}, visible: $root.loginState.hasPermission($root.access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ)" class="btn btn-small" title="Download Backup">
                     <i class="fa fa-fw fa-download"></i>
                 </a>
             </td>

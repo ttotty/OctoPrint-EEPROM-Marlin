@@ -45,7 +45,7 @@ class API:
 
     def on_api_command(self, command, data):
         if command == CMD_LOAD:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_READ.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ.can():
                 # Insufficient rights
                 flask.abort(403)
 
@@ -63,7 +63,7 @@ class API:
                 self._printer.commands(commands)
 
         elif command == CMD_SAVE:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT.can():
                 # Insufficient rights
                 flask.abort(403)
 
@@ -71,35 +71,35 @@ class API:
             self.save_eeprom_data(data.get("eeprom_data"))
 
         elif command == CMD_BACKUP:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT.can():
                 # Insufficient rights
                 flask.abort(403)
 
             # Execute a backup
             return self.create_backup(data.get("name"))
         elif command == CMD_RESTORE:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT.can():
                 # Insufficient rights
                 flask.abort(403)
 
             # Restore the backup
             return self.restore_backup(data.get("name"))
         elif command == CMD_DELETE:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT.can():
                 # Insufficient rights
                 flask.abort(403)
 
             # Delete the backup
             return self.delete_backup(data.get("name"))
         elif command == CMD_UPLOAD_RESTORE:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT.can():
                 # Insufficient rights
                 flask.abort(403)
 
             # Restore backup from upload
             return self.upload_restore(data.get("data"))
         elif command == CMD_RESET:
-            if not Permissions.PLUGIN_EEPROM_MARLIN_RESET.can():
+            if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_RESET.can():
                 # Insufficient rights
                 flask.abort(403)
 
@@ -107,7 +107,7 @@ class API:
             return self.reset_eeprom()
 
     def on_api_get(self, request):
-        if not Permissions.PLUGIN_EEPROM_MARLIN_READ.can():
+        if not Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ.can():
             flask.abort(403)
 
         return flask.jsonify(

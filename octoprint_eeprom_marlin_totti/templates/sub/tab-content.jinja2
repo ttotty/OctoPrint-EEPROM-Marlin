@@ -3,19 +3,19 @@
 {% macro section(name, id) %}
 <div data-bind="visible: eeprom.{{ id }}.visible">
     <strong>{{ _(name) }}</strong>
-    <a href="{{ plugin_eeprom_marlin_DATA_STRUCTURE[id].link }}" target="_blank" class="pull-right">Marlin Docs</a>
+    <a href="{{ plugin_eeprom_marlin_totti_DATA_STRUCTURE[id].link }}" target="_blank" class="pull-right">Marlin Docs</a>
     <hr>
 
-    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE[id].params.items() %}
+    {% for key, value in plugin_eeprom_marlin_totti_DATA_STRUCTURE[id].params.items() %}
     {{ field.single_field(id, key, value) }}
     {% endfor %}
 
-    {% if "switches" in plugin_eeprom_marlin_DATA_STRUCTURE[id] %}
-        {% for switch in plugin_eeprom_marlin_DATA_STRUCTURE[id]["switches"] %}
+    {% if "switches" in plugin_eeprom_marlin_totti_DATA_STRUCTURE[id] %}
+        {% for switch in plugin_eeprom_marlin_totti_DATA_STRUCTURE[id]["switches"] %}
             <!-- ko foreach: eeprom.{{ id }}.{{ switch }} -->
             <p data-bind="text: key"></p>
             <hr>
-            {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE[id].params.items() %}
+            {% for key, value in plugin_eeprom_marlin_totti_DATA_STRUCTURE[id].params.items() %}
                 {{ field.switched_field(key, value) }}
             {% endfor %}
             <!-- /ko -->

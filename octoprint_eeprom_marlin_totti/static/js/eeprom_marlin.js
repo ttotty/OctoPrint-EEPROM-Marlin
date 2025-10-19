@@ -294,7 +294,7 @@ $(function () {
         !self.printerState.isBusy() &&
         self.printerState.isReady() &&
         self.loginState.hasPermission(
-          self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT
+          self.access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT
         )
       );
     });
@@ -311,7 +311,7 @@ $(function () {
     self.enableLoad = ko.pureComputed(function () {
       return (
         self.loginState.hasPermission(
-          self.access.permissions.PLUGIN_EEPROM_MARLIN_READ
+          self.access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ
         ) && self.enable_buttons()
       );
     });
@@ -319,7 +319,7 @@ $(function () {
     self.enableSave = ko.pureComputed(function () {
       return (
         self.loginState.hasPermission(
-          self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT
+          self.access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_EDIT
         ) && self.enable_buttons()
       );
     });
@@ -327,7 +327,7 @@ $(function () {
     self.enableReset = ko.pureComputed(function () {
       return (
         self.loginState.hasPermission(
-          self.access.permissions.PLUGIN_EEPROM_MARLIN_RESET
+          self.access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_RESET
         ) && self.enable_buttons()
       );
     });
@@ -484,7 +484,7 @@ $(function () {
 
     self.restore_from_upload = function () {
       var fileInput = document.getElementById(
-        "plugin_eeprom_marlin_backup_upload"
+        "plugin_eeprom_marlin_totti_backup_upload"
       );
       var files = fileInput.files;
 
@@ -553,7 +553,7 @@ $(function () {
     self.onAllBound = self.onEventConnected = function () {
       if (
         self.loginState.hasPermission(
-          self.access.permissions.PLUGIN_EEPROM_MARLIN_READ
+          self.access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ
         )
       ) {
         self.loading(true);
@@ -584,7 +584,7 @@ $(function () {
       "loginStateViewModel",
       "accessViewModel",
     ],
-    elements: ["#tab_plugin_eeprom_marlin"],
+    elements: ["#tab_plugin_eeprom_marlin_totti"],
   });
 });
 

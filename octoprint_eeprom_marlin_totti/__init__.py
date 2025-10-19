@@ -123,7 +123,7 @@ class EEPROMMarlinPlugin(
 
     # BluePrint handling
     @octoprint.plugin.BlueprintPlugin.route("/download/<name>")
-    @Permissions.PLUGIN_EEPROM_MARLIN_READ.require(403)
+    @Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ.require(403)
     def download_backup(self, name):
         try:
             backup_data = self._backup_handler.read_backup(name)
