@@ -267,11 +267,11 @@ class EEPROMMarlinPlugin(
         # https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html#sec-bundledplugins-softwareupdate-hooks-check-config
         return {
             "eeprom_marlin": {
-                "displayName": "Marlin EEPROM Editor",
+                "displayName": "Marlin EEPROM Editor (Totti)",
                 "displayVersion": self._plugin_version,
                 # version check: github repository
                 "type": "github_release",
-                "user": "cp2004",
+                "user": "ttotty",
                 "repo": "OctoPrint-EEPROM-Marlin",
                 "current": self._plugin_version,
                 "stable_branch": {
@@ -287,19 +287,19 @@ class EEPROMMarlinPlugin(
                     }
                 ],
                 # update method: pip
-                "pip": "https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip",
+                "pip": "https://github.com/ttotty/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip",
             }
         }
 
 
-__plugin_name__ = "Marlin EEPROM Editor"
+__plugin_name__ = "Marlin EEPROM Editor (Totti)"
 __plugin_description__ = """
     Makes it possible to change the EEPROM values of Marlin Firmware through OctoPrint.
     Plugin previously maintained by Anderson Silva, currently Charlie Powell.
     """
-__plugin_author__ = "Charlie Powell"
+__plugin_author__ = "Previously Charlie Powell"
 __plugin_license__ = "AGPLv3"
-__plugin_url__ = "https://github.com/cp2004/OctoPrint-EEPROM-Marlin"
+__plugin_url__ = "https://github.com/ttotty/OctoPrint-EEPROM-Marlin"
 __plugin_pythoncompat__ = ">=3.7,<4"
 __plugin_version__ = __version__
 
