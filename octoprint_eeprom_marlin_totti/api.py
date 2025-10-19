@@ -8,8 +8,8 @@ import flask
 import octoprint.util
 from octoprint.access.permissions import Permissions
 
-from octoprint_eeprom_marlin import util
-from octoprint_eeprom_marlin.backup import BackupMissingError, BackupNameTakenError
+from octoprint_eeprom_marlin_totti import util
+from octoprint_eeprom_marlin_totti.backup import BackupMissingError, BackupNameTakenError
 
 CMD_LOAD = "load"
 CMD_SAVE = "save"

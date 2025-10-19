@@ -14,7 +14,7 @@ from octoprint.access import ADMIN_GROUP, READONLY_GROUP, USER_GROUP
 from octoprint.access.permissions import Permissions
 from octoprint.util.version import is_octoprint_compatible
 
-from octoprint_eeprom_marlin import (
+from octoprint_eeprom_marlin_totti import (
     _version,
     api,
     backup,

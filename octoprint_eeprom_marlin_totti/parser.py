@@ -10,7 +10,7 @@ __copyright__ = (
 
 import re
 
-from octoprint_eeprom_marlin import data
+from octoprint_eeprom_marlin_totti import data
 
 # Some regexes used for parsing. Initially borrowed from OctoPrint's comm layer
 # but modified to suit the plugin better.

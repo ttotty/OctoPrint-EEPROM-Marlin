@@ -4,7 +4,7 @@ __copyright__ = (
 )
 import time
 
-from octoprint_eeprom_marlin.data import ALL_DATA_STRUCTURE as DATA
+from octoprint_eeprom_marlin_totti.data import ALL_DATA_STRUCTURE as DATA
 
 
 def build_backup_name():
