@@ -2,7 +2,7 @@ import time
 import unittest
 from unittest import mock
 
-from octoprint_eeprom_marlin import backup
+from octoprint_eeprom_marlin_totti import backup
 
 OPEN_SIGNATURE = "builtins.open"
 MOCK_PLUGIN_DATAFOLDER = "/home/pi/.octoprint/data/eeprom_marlin"

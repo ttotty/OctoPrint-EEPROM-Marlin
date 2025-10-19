@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from octoprint_eeprom_marlin import parser
+from octoprint_eeprom_marlin_totti import parser
 
 
 class ParserTestCase(unittest.TestCase):

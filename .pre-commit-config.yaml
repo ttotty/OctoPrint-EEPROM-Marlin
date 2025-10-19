@@ -1,4 +1,4 @@
-exclude: ^(translations/|.*\.css|.*\.svg|octoprint_eeprom_marlin/static/webfonts|versioneer.py|octoprint_eeprom_marlin/_version.py)
+exclude: ^(translations/|.*\.css|.*\.svg|octoprint_eeprom_marlin_totti/static/webfonts|versioneer.py|octoprint_eeprom_marlin_totti/_version.py)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
