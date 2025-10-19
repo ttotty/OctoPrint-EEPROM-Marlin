@@ -143,7 +143,7 @@ class EEPROMMarlinPlugin(
     # Websocket communication
     def send_message(self, type, data):
         payload = {"type": type, "data": data}
-        self._plugin_manager.send_plugin_message("eeprom_marlin", payload)
+        self._plugin_manager.send_plugin_message("eeprom_marlin_totti", payload)
 
     # Hook handlers
     def comm_protocol_firmware_info(self, comm, name, fw_data, *args, **kwargs):
@@ -266,7 +266,7 @@ class EEPROMMarlinPlugin(
     def get_update_information(self):
         # https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html#sec-bundledplugins-softwareupdate-hooks-check-config
         return {
-            "eeprom_marlin": {
+            "eeprom_marlin_totti": {
                 "displayName": "Marlin EEPROM Editor (Totti)",
                 "displayVersion": self._plugin_version,
                 # version check: github repository

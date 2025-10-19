@@ -343,12 +343,12 @@ $(function () {
     // Button bindings
     self.load_eeprom = function () {
       self.loading(true);
-      OctoPrint.simpleApiCommand("eeprom_marlin", "load");
+      OctoPrint.simpleApiCommand("eeprom_marlin_totti", "load");
     };
 
     self.save_eeprom = function () {
       self.saving(true);
-      OctoPrint.simpleApiCommand("eeprom_marlin", "save", {
+      OctoPrint.simpleApiCommand("eeprom_marlin_totti", "save", {
         eeprom_data: self.eeprom_to_json(),
       }).done(function (response) {
         self.saving(false);
@@ -360,7 +360,7 @@ $(function () {
       showConfirmationDialog(
         "This will reset the EEPROM settings to factory defaults",
         function () {
-          OctoPrint.simpleApiCommand("eeprom_marlin", "reset");
+          OctoPrint.simpleApiCommand("eeprom_marlin_totti", "reset");
         },
         {
           proceed: "Reset",
@@ -387,7 +387,7 @@ $(function () {
     };
 
     self.delete_backup = function (name) {
-      OctoPrint.simpleApiCommand("eeprom_marlin", "delete", {
+      OctoPrint.simpleApiCommand("eeprom_marlin_totti", "delete", {
         name: name,
       }).done(function (response) {
         let success = response.success;
@@ -407,7 +407,7 @@ $(function () {
     self.backup_name = ko.observable();
 
     self.new_backup = function () {
-      if (self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()) {
+      if (self.settingsViewModel.settings.plugins.eeprom_marlin_totti.custom_name()) {
         // Trigger modal with custom name
         $("#eepromBackupNameModal").modal("show");
       } else {
@@ -423,12 +423,12 @@ $(function () {
       $("#eepromBackupNameModal").modal("hide");
 
       var payload = {};
-      if (self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()) {
+      if (self.settingsViewModel.settings.plugins.eeprom_marlin_totti.custom_name()) {
         payload = { name: self.backup_name() };
       }
       self.backup_name("");
 
-      OctoPrint.simpleApiCommand("eeprom_marlin", "backup", payload).done(
+      OctoPrint.simpleApiCommand("eeprom_marlin_totti", "backup", payload).done(
         function (response) {
           let success = response.success;
           if (!success) {
@@ -445,7 +445,7 @@ $(function () {
               hide: true,
               delay: 4000,
             });
-            OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
+            OctoPrint.simpleApiGet("eeprom_marlin_totti").done(function (response) {
               self.backups_from_response(response.backups);
             });
           }
@@ -454,7 +454,7 @@ $(function () {
     };
 
     self.restore_backup = function (name) {
-      OctoPrint.simpleApiCommand("eeprom_marlin", "restore", {
+      OctoPrint.simpleApiCommand("eeprom_marlin_totti", "restore", {
         name: name,
       }).done(function (response) {
         let success = response.success;
@@ -502,7 +502,7 @@ $(function () {
       function recievedText(e) {
         let lines = e.target.result;
         var json_data = JSON.parse(lines);
-        OctoPrint.simpleApiCommand("eeprom_marlin", "upload_restore", {
+        OctoPrint.simpleApiCommand("eeprom_marlin_totti", "upload_restore", {
           data: json_data,
         }).done(function (response) {
           let success = response.success;
@@ -530,7 +530,7 @@ $(function () {
 
     // DataUpdater
     self.onDataUpdaterPluginMessage = function (plugin, data) {
-      if (plugin !== "eeprom_marlin") {
+      if (plugin !== "eeprom_marlin_totti") {
         return;
       }
       if (data.type === "load") {
@@ -557,7 +557,7 @@ $(function () {
         )
       ) {
         self.loading(true);
-        OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
+        OctoPrint.simpleApiGet("eeprom_marlin_totti").done(function (response) {
           self.eeprom_from_json(response);
           self.info_from_json(response);
           self.backups_from_response(response.backups);
