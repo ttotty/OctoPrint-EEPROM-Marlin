@@ -129,8 +129,8 @@ $(function () {
         ["I", "T"]
       );
 
-      eeprom.input_shaping_x = create_eeprom_observables(["D", "F"]);
-      eeprom.input_shaping_y = create_eeprom_observables(["D", "F"]);
+      eeprom.input_shaping_x = create_eeprom_observables(["D", "F"], ["X"]);
+      eeprom.input_shaping_y = create_eeprom_observables(["D", "F"], ["Y"]);
 
       return eeprom;
     })();
