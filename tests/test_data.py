@@ -5,7 +5,7 @@ Tests for the data processing and storage part of the plugin
 import unittest
 from unittest import mock
 
-from octoprint_eeprom_marlin_totti import data, parser
+from octoprint_eeprom_marlin import data, parser
 
 
 class DataTestCase(unittest.TestCase):

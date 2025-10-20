@@ -5,14 +5,14 @@ import versioneer
 ########################################################################################################################
 
 # The plugin's identifier, has to be unique
-plugin_identifier = "eeprom_marlin_totti"  # DO NOT CHANGE IN PRODUCTION
+plugin_identifier = "eeprom_marlin"  # DO NOT CHANGE IN PRODUCTION
 
 # The plugin's python package, should be "octoprint_<plugin identifier>", has to be unique
-plugin_package = "octoprint_eeprom_marlin_totti"  # DO NOT CHANGE IN PRODUCTION
+plugin_package = "octoprint_eeprom_marlin"  # DO NOT CHANGE IN PRODUCTION
 
 # The plugin's human readable name. Can be overwritten within OctoPrint's internal data via __plugin_name__ in the
 # plugin module
-plugin_name = "Marlin EEPROM editor_totti"  # DO NOT CHANGE IN PRODUCTION - use internal data
+plugin_name = "Marlin EEPROM editor"  # DO NOT CHANGE IN PRODUCTION - use internal data
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
 plugin_version = versioneer.get_version()

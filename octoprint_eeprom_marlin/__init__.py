@@ -14,7 +14,7 @@ from octoprint.access import ADMIN_GROUP, READONLY_GROUP, USER_GROUP
 from octoprint.access.permissions import Permissions
 from octoprint.util.version import is_octoprint_compatible
 
-from octoprint_eeprom_marlin_totti import (
+from octoprint_eeprom_marlin import (
     _version,
     api,
     backup,
@@ -123,7 +123,7 @@ class EEPROMMarlinPlugin(
 
     # BluePrint handling
     @octoprint.plugin.BlueprintPlugin.route("/download/<name>")
-    @Permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ.require(403)
+    @Permissions.PLUGIN_EEPROM_MARLIN_READ.require(403)
     def download_backup(self, name):
         try:
             backup_data = self._backup_handler.read_backup(name)
@@ -143,7 +143,7 @@ class EEPROMMarlinPlugin(
     # Websocket communication
     def send_message(self, type, data):
         payload = {"type": type, "data": data}
-        self._plugin_manager.send_plugin_message("eeprom_marlin_totti", payload)
+        self._plugin_manager.send_plugin_message("eeprom_marlin", payload)
 
     # Hook handlers
     def comm_protocol_firmware_info(self, comm, name, fw_data, *args, **kwargs):
@@ -266,7 +266,7 @@ class EEPROMMarlinPlugin(
     def get_update_information(self):
         # https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html#sec-bundledplugins-softwareupdate-hooks-check-config
         return {
-            "eeprom_marlin_totti": {
+            "eeprom_marlin": {
                 "displayName": "Marlin EEPROM Editor (Totti)",
                 "displayVersion": self._plugin_version,
                 # version check: github repository

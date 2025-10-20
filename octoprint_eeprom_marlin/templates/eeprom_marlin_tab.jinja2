@@ -1,4 +1,4 @@
-<!-- ko if: loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ) -->
+<!-- ko if: loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
 <div class="row-fluid eeprom-nav">
     <div class="span3">
         <div class="eeprom-brand">
@@ -57,7 +57,7 @@
 {% include "overlays/not_connected.jinja2" %}
 </div>
 <!-- /ko -->
-<!-- ko if: !loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_TOTTI_READ) -->
+<!-- ko if: !loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
 <div class="alert alert-warning">
     <i class="fa fa-user-times text-error fa-3x pull-left" style="margin-right: 0.5em;"></i>
     <p>{{ _("Your user account does not have the correct permissions to use this feature.") }}</p>

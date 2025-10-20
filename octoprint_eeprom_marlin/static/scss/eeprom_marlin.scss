@@ -8,8 +8,8 @@ $touchUI_icon: "\f14b";
   // Touch tab icon
   #tabs,
   #navbar #all_touchui_settings {
-    #tab_plugin_eeprom_marlin_totti_link,
-    #tab_plugin_eeprom_marlin_totti_link2 {
+    #tab_plugin_eeprom_marlin_link,
+    #tab_plugin_eeprom_marlin_link2 {
       a:before {
         content: $touchUI_icon;
       }
@@ -17,7 +17,7 @@ $touchUI_icon: "\f14b";
   }
   // Override some styles to format things a little better **only** within my plugin
   // Uses !important to override touch UI styles definitely, we risk chance otherwise.
-  #tab_plugin_eeprom_marlin_totti {
+  #tab_plugin_eeprom_marlin {
     // override width of the table to stop it going off screen
     .table {
       width: auto !important;
@@ -35,7 +35,7 @@ $touchUI_icon: "\f14b";
   }
 }
 
-#tab_plugin_eeprom_marlin_totti {
+#tab_plugin_eeprom_marlin {
   div.eeprom-nav {
     margin-bottom: 12.5px;
   }
@@ -166,6 +166,6 @@ $touchUI_icon: "\f14b";
   }
 }
 
-#plugin_eeprom_marlin_totti_backup_upload {
+#plugin_eeprom_marlin_backup_upload {
   display: none;
 }
