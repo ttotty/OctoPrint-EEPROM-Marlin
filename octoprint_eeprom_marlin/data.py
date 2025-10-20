@@ -273,8 +273,8 @@ ALL_DATA_STRUCTURE = {
     "input_shaping_x": {
         "command": "M593",
         "params": {
-            "F": {"type": "float2", "label": "Damping Frequency", "units": "hz"},
-            "D": {"type": "float2", "label": "Zeta/damping factor"},
+            "F": {"type": "float2", "label": "Damping Frequency x", "units": "hz"},
+            "D": {"type": "float2", "label": "Zeta/damping factor x"},
         },
         "switches": ["X"],
         "link": "https://marlinfw.org/docs/gcode/M593.html",
@@ -283,8 +283,8 @@ ALL_DATA_STRUCTURE = {
     "input_shaping_y": {
         "command": "M593",
         "params": {
-            "F": {"type": "float2", "label": "Damping Frequency", "units": "hz"},
-            "D": {"type": "float2", "label": "Zeta/damping factor"},
+            "F": {"type": "float2", "label": "Damping Frequency y", "units": "hz"},
+            "D": {"type": "float2", "label": "Zeta/damping factor y"},
         },
         "switches": ["Y"],
         "link": "https://marlinfw.org/docs/gcode/M593.html",
