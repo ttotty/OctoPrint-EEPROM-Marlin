@@ -86,6 +86,17 @@ class Parser:
 
                 parameters[p] = v
 
+
+        # detect standalone switch letters (e.g. " X " or " X\n" or start/end)
+        if "switches" in data_structure:
+            for sw in data_structure["switches"]:
+                # only add if we haven't already parsed a value for it
+                if sw not in parameters:
+                    # use word boundaries to avoid matching letters in other tokens
+                    if re.search(rf"\b{re.escape(sw)}\b", line):
+                        # set to integer 1 so subsequent code sees "X" as "X1" behaviour
+                        parameters[sw] = 1
+
         # construct response
         return {
             "name": command_name,
