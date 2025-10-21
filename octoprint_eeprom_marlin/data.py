@@ -393,8 +393,24 @@ class MultipleData:
             return self.data[switch]
 
     def set_data_for_switch(self, switch, data):
-        if switch[0] not in self.switches:
-            raise ValueError("unknown switch")
+        # Normalize switch key (e.g. "XNone" → "X")
+        if switch[0] in self.switches:
+            base_switch = switch[0]
+        elif switch in self.switches:
+            base_switch = switch
+        else:
+            raise ValueError(f"Unknown switch: {switch}")
+
+        # Ensure entry exists
+        if base_switch not in self.data:
+            self.data[base_switch] = IndividualData(
+                name=self.name,
+                command=self.command,
+                params=copy.deepcopy(ALL_DATA_STRUCTURE[self.name]["params"]),
+            )
+
+        # Merge parsed data
+        self.data[base_switch].params_from_dict(data)
 
         if switch not in data:
             # This particular switch not seen, so create data class for it
