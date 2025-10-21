@@ -48,14 +48,13 @@ class Parser:
         :return: dict: parsed values
         """
 
-        # work out what command we have
         command_match = regex_command.match(line)
-        if command_match:
-            command = command_match.group("gcode")
-        else:
+        if not command_match:
             return
 
-        # Find the name (ID) of the command to use internally
+        command = command_match.group("gcode")
+
+        # Identify internal data structure by command
         try:
             command_name = data.find_name_from_command(command)
         except ValueError:
@@ -66,38 +65,37 @@ class Parser:
         data_structure = data.ALL_DATA_STRUCTURE[command_name]
         params = copy.deepcopy(data_structure["params"])
         if "switches" in data_structure:
-            params.update(
-                {f"{param}": {"type": "switch"} for param in data_structure["switches"]}
-            )
+            params.update({sw: {"type": "switch"} for sw in data_structure["switches"]})
 
-        # work out what values we have
+        # Parse all key-value pairs like X80.0 Y80.0 etc.
         parameters = {}
         matches = regex_parameter.findall(line)
         for match in matches:
-            if match[0] in params.keys():
-                # We have a supported parameter
-                p = match[0].upper()
-                v = float(match[1])
+            letter = match[0].upper()
+            value = match[1]
 
-                if params[p]["type"] == "bool":
-                    v = True if int(v) == 1 else False
-                if params[p]["type"] == "switch":
-                    v = int(v)
+            # Only include parameters that exist in structure
+            if letter in params.keys():
+                if params[letter]["type"] == "bool":
+                    v = True if int(value) == 1 else False
+                elif params[letter]["type"] == "switch":
+                    v = int(value)
+                else:
+                    v = float(value)
+                parameters[letter] = v
 
-                parameters[p] = v
-
-
-        # detect standalone switch letters (e.g. " X " or " X\n" or start/end)
+        # --- Fix: detect standalone switches (X, Y) without numeric values ---
         if "switches" in data_structure:
             for sw in data_structure["switches"]:
-                # only add if we haven't already parsed a value for it
-                if sw not in parameters:
-                    # use word boundaries to avoid matching letters in other tokens
-                    if re.search(rf"\b{re.escape(sw)}\b", line):
-                        # set to integer 1 so subsequent code sees "X" as "X1" behaviour
-                        parameters[sw] = 1
+                # Only set switch if not already matched (avoid X1/X duplication)
+                if sw not in parameters and re.search(rf"\b{sw}\b", line):
+                    parameters[sw] = 1  # signal presence
 
-        # construct response
+        # --- Cleanup: remove 'X1', 'Y1' duplicates if both exist ---
+        for sw in data_structure.get("switches", []):
+            if f"{sw}1" in parameters and sw in parameters:
+                parameters.pop(f"{sw}1", None)
+
         return {
             "name": command_name,
             "command": command,
