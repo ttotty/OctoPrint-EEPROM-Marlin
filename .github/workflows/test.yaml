@@ -2,7 +2,7 @@ name: Test
 on:
   push:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [workflow_dispatch, opened, synchronize, reopened]
   release:
     types: [published, prereleased]
 
