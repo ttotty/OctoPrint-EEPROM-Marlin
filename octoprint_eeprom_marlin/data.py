@@ -393,43 +393,48 @@ class MultipleData:
             return self.data[switch]
 
     def set_data_for_switch(self, switch, data):
-        # Normalize switch key (e.g. "XNone" → "X")
-        if switch[0] in self.switches:
-            base_switch = switch[0]
-        elif switch in self.switches:
-            base_switch = switch
-        else:
-            raise ValueError(f"Unknown switch: {switch}")
+        if switch[0] not in self.switches:
+            raise ValueError("unknown switch")
 
-        # Ensure entry exists
-        if base_switch not in self.data:
-            self.data[base_switch] = IndividualData(
-                name=self.name,
-                command=self.command,
-                params=copy.deepcopy(ALL_DATA_STRUCTURE[self.name]["params"]),
-            )
-
-        # Merge parsed data
-        self.data[base_switch].params_from_dict(data)
-
-        if switch not in data:
-            # This particular switch not seen, so create data class for it
+        # If this particular switch not seen, create data class for it
+        if switch not in self.data or not isinstance(self.data[switch], IndividualData):
             self.data[switch] = IndividualData(
                 name=self.name,
                 command=self.command,
                 params=copy.deepcopy(ALL_DATA_STRUCTURE[self.name]["params"]),
             )
 
+        # set the params for this switch
         self.data[switch].params_from_dict(data)
+
+        # --- IMPORTANT: remove/clear any previously stored "no-switch" (generic) values ---
+        # Generic params are stored as dicts with a "value" key (from __init__).
+        # Clear those so the UI only sees the per-switch values.
+        for k, v in list(self.data.items()):
+            if not isinstance(v, IndividualData):
+                # clear generic value if present
+                if isinstance(v, dict) and "value" in v:
+                    v["value"] = None
+
 
     def set_data_no_switch(self, data):
         if not data:
             return
+
+        # If we already have any switch-specific IndividualData entries, prefer them
+        # and do not set generic (no-switch) values — prevents duplication.
+        if any(isinstance(v, IndividualData) for v in self.data.values()):
+            # optional debug
+            # self.plugin._logger.debug("Skipping no-switch data because switch-specific data exists for %s", self.name)
+            return
+
+        # No per-switch data yet, so store the generic values
         for key, value in data.items():
             if value is not None:
                 if key not in self.data:
                     self.data[key] = {}
                 self.data[key]["value"] = value
+
 
     def is_switch_valid(self, switch):
         return switch[0] in self.switches
@@ -527,16 +532,32 @@ class EEPROMData:
                 # No switches
                 data_class.set_data_no_switch(data["params"])
             else:
-                # We ignore the fact there could be more than one switch and use
-                # only the first
-                switch_value = data["params"][switches[0]]
-                # Remove switch from params, so it's not set on data
-                data["params"].pop(switches[0])
-                data_class.set_data_for_switch(
-                    f"{switches[0]}{switch_value}", data["params"]
-                )
+                # Use only the first switch (X, Y, I, T, etc.)
+                switch_letter = switches[0]
+                # Pop the switch key from params (don’t include it as a value param)
+                switch_value = data["params"].pop(switch_letter, None)
+
+                # --- Generic handling for switch formatting ---
+                # If the switch has no numeric value (e.g. just "X" or "Y"), treat it as a plain flag
+                if switch_value is None or isinstance(switch_value, bool):
+                    switch_key = switch_letter
+                else:
+                    # Only append the numeric part if it's actually numeric (for I1, T0, etc.)
+                    try:
+                        float(switch_value)
+                        switch_key = f"{switch_letter}{switch_value}"
+                    except (ValueError, TypeError):
+                        switch_key = switch_letter
+
+                # Set parsed data for this switch key
+                data_class.set_data_for_switch(switch_key, data["params"])
+
+                # Optional: debug logging for visibility
+                self.plugin._logger.debug(f"Parsed switch '{switch_key}' for {data['command']}: {data['params']}")
+
         else:
             data_class.params_from_dict(data["params"])
+
 
     def to_dict(self):
         # Wraps all the data up to send it to the UI
