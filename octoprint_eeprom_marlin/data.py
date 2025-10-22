@@ -277,6 +277,7 @@ ALL_DATA_STRUCTURE = {
             "D": {"type": "float2", "label": "Zeta / Damping Factor"},
         },
         "switches": ["X", "Y"],
+        "switchesIndexable": False,
         "link": "https://marlinfw.org/docs/gcode/M593.html",
         "name": "Input Shaping (X and Y axes)",
     },
