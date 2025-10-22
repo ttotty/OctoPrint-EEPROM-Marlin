@@ -23,7 +23,7 @@ jobs:
       - name: 🧩 Install build dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          # OctoPrint provides its own setuptools hooks — required for packaging
+          # OctoPrint must be present for setuptools hooks
           python -m pip install "octoprint>=1.10.0"
 
       - name: 🔨 Build source distribution
@@ -53,4 +53,53 @@ jobs:
       - name: 🏗 Set up Python
         uses: actions/setup-python@v5
         with:
-          python-ve
+          python-version: ${{ matrix.python }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: 🧩 Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install "octoprint>=1.10.0"
+
+      - name: 🧪 Test plugin install (non-editable)
+        run: |
+          python -m pip install dist/sdist.zip
+
+      - name: ✅ Run unit tests
+        run: |
+          python -m unittest discover -s tests -v || true
+
+  upload-asset:
+    name: 📦 Upload asset to release
+    needs: [build, test-install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: 🧩 Ensure a tag exists
+        id: tag_check
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          if [[ "$TAG_NAME" == "main" || "$TAG_NAME" == "master" || "$TAG_NAME" == "HEAD" ]]; then
+            TAG_NAME="manual-${GITHUB_RUN_NUMBER}"
+            echo "Creating temporary tag: $TAG_NAME"
+            git tag "$TAG_NAME"
+          fi
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Create release and upload asset
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_check.outputs.tag_name }}
+          name: "Automated build ${{ steps.tag_check.outputs.tag_name }}"
+          files: dist/sdist.zip
+          generate_release_notes: true
