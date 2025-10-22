@@ -29,7 +29,6 @@ jobs:
         run: |
           ls dist
           mv dist/*.zip dist/sdist.zip
-          
       - name: ⬆ Upload build result
         uses: actions/upload-artifact@v4
         with:
@@ -49,11 +48,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
-      - name: 🏗 Set up test dependencies
+      - name: 🏗 Install OctoPrint and pytest dependencies
         run: |
-          python -m pip install wheel --user
+          python -m pip install --upgrade pip setuptools wheel
           pip install octoprint${{ matrix.octoprint }} pytest
-          pip install -e .
       - name: 🚀 Run test suite
         run: |
           pytest
@@ -158,9 +156,4 @@ jobs:
       
       - name: 🧪 Run unit tests
         run: |
-          # Ensure tests folder is importable
-          mkdir -p tests
-          touch tests/__init__.py
-      
           python -m unittest discover -s tests -v || true
-
