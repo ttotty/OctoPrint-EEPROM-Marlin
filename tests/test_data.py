@@ -27,6 +27,35 @@ class DataTestCase(unittest.TestCase):
             data_class.params_to_dict(), {"X": 80.0, "Y": 80.0, "Z": 800.0, "E": 90.0}
         )
 
+    def test_input_shaping_structure(self):
+        plugin = mock.Mock()  # mock logger
+        eeprom_parser = parser.Parser(plugin)
+        eeprom_data = data.EEPROMData(plugin)
+
+        # Simulate printer response for input shaping
+        lines = [
+            "echo:  M593 X F57.00 D0.25",
+            "echo:  M593 Y F38.50 D0.15",
+        ]
+
+        # Parse each line and feed into the data class
+        for line in lines:
+            parsed_data = eeprom_parser.parse_eeprom_data(line)
+            eeprom_data.from_parser(parsed_data)
+
+        result = eeprom_data.to_dict()["input_shaping"]
+
+        expected = {
+            "command": "M593",
+            "params": {
+                # Each switch (X and Y) gets its own parameter dict
+                "X": {"F": 57.0, "D": 0.25},
+                "Y": {"F": 38.5, "D": 0.15},
+            },
+        }
+
+        self.assertEqual(result, expected)
+
     def test_data_class(self):
         plugin = mock.Mock()  # mocks the logger that's used in data
         eeprom_parser = parser.Parser(plugin)
