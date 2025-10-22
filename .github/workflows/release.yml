@@ -71,6 +71,9 @@ jobs:
 
       - name: ✅ Run unit tests
         run: |
+          # Ensure tests folder is importable
+          mkdir -p tests
+          touch tests/__init__.py   
           python -m unittest discover -s tests -v || true
 
   upload-asset:
