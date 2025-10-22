@@ -102,8 +102,8 @@ class DataTestCase(unittest.TestCase):
             {
                 "command": "M913",
                 "params": {
-                    "I1": {"X": None, "Y": None, "Z": 164, "E": None},
-                    "T0": {"X": None, "Y": None, "Z": None, "E": 19},
+                    "I1": {"X": None, "Y": None, "Z": 164.0, "E": None},
+                    "T0": {"X": None, "Y": None, "Z": None, "E": 19.0},
                     "X": None,
                     "Y": None,
                     "Z": None,
@@ -121,11 +121,11 @@ class DataTestCase(unittest.TestCase):
             {
                 "command": "M913",
                 "params": {
-                    "I1": {"X": None, "Y": None, "Z": 164, "E": None},
+                    "I1": {"X": None, "Y": None, "Z": 164.0, "E": None},
                     "T0": {"X": None, "Y": None, "Z": None, "E": 19.0},
-                    "X": 229,
-                    "Y": 229,
-                    "Z": 164,
+                    "X": 229.0,
+                    "Y": 229.0,
+                    "Z": 164.0,
                     "E": None,
                 },
             },
@@ -204,9 +204,9 @@ class DataTestCase(unittest.TestCase):
             "tmc_current": {
                 "command": "M906",
                 "params": {
-                    "X": 1200,
-                    "Y": 1200,
-                    "Z": 400,
+                    "X": 1200.0,
+                    "Y": 1200.0,
+                    "Z": 400.0,
                     "E": None,
                     "I1": {"E": None, "X": None, "Y": None, "Z": 400.0},
                     "T0": {"E": 900.0, "X": None, "Y": None, "Z": None},
