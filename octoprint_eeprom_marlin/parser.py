@@ -35,59 +35,66 @@ class Parser:
         self._logger = logger
 
     def parse_eeprom_data(self, line):
+        """
+        Parse a received line from the printer into a dictionary of name, command, params
+        Eg: `echo: M92 X80.0 Y80.0 Z800.0 E90.0`
+        to {"name": steps, "command": "M92", "params": {
+            "X": 80.0,
+            "Y": 80.0,
+            "Z": 800.0,
+            "E": 90.0
+        }
+        :param line: line received from FW
+        :return: dict: parsed values
+        """
+
         command_match = regex_command.match(line)
         if not command_match:
             return
 
         command = command_match.group("gcode")
 
+        # Identify internal data structure by command
         try:
             command_name = data.find_name_from_command(command)
         except ValueError:
-            self._logger.warning(f"EEPROM output line not recognized: {line.strip()}")
+            self._logger.warning("EEPROM output line not recognized, skipped")
+            self._logger.warning("Line: {}".format(line.strip("\r\n ")))
             return
 
         data_structure = data.ALL_DATA_STRUCTURE[command_name]
         params = copy.deepcopy(data_structure["params"])
-        switches = data_structure.get("switches", [])
-        switches_indexable = data_structure.get("switchesIndexable", True)
+        if "switches" in data_structure:
+            params.update({sw: {"type": "switch"} for sw in data_structure["switches"]})
 
-        if switches:
-            params.update({sw: {"type": "switch"} for sw in switches})
-
+        # Parse all key-value pairs like X80.0 Y80.0 etc.
         parameters = {}
         matches = regex_parameter.findall(line)
-
         for match in matches:
             letter = match[0].upper()
             value = match[1]
+
+            # Only include parameters that exist in structure
             if letter in params.keys():
-                param_type = params[letter]["type"]
-                if param_type == "bool":
-                    v = True if float(value) == 1.0 else False
-                elif param_type == "switch":
+                if params[letter]["type"] == "bool":
+                    v = True if int(value) == 1 else False
+                elif params[letter]["type"] == "switch":
                     v = int(value)
                 else:
                     v = float(value)
                 parameters[letter] = v
 
-        # Handle switches according to switchesIndexable flag
-        if switches:
-            if not switches_indexable:
-                # Non-indexable: plain axis letters (like M593 X/Y)
-                for sw in switches:
-                    if re.search(rf"\b{sw}\b", line):
-                        parameters[sw] = parameters.get(sw, 1)
-            else:
-                # Indexable: numeric switches (like M906 I1, T0)
-                for match in regex_parameter.findall(line):
-                    letter = match[0].upper()
-                    value = match[1]
-                    if letter in switches:
-                        try:
-                            parameters[f"{letter}{int(float(value))}"] = 1
-                        except ValueError:
-                            continue
+        # --- Fix: detect standalone switches (X, Y) without numeric values ---
+        if "switches" in data_structure:
+            for sw in data_structure["switches"]:
+                # Only set switch if not already matched (avoid X1/X duplication)
+                if sw not in parameters and re.search(rf"\b{sw}\b", line):
+                    parameters[sw] = 1  # signal presence
+
+        # --- Cleanup: remove 'X1', 'Y1' duplicates if both exist ---
+        for sw in data_structure.get("switches", []):
+            if f"{sw}1" in parameters and sw in parameters:
+                parameters.pop(f"{sw}1", None)
 
         return {
             "name": command_name,
