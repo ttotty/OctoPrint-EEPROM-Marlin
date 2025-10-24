@@ -63,9 +63,9 @@ class Parser:
             return
 
         data_structure = data.ALL_DATA_STRUCTURE[command_name]
-        params = copy.deepcopy(data_structure["params"])
+        params_spec = copy.deepcopy(data_structure["params"])
         if "switches" in data_structure:
-            params.update({sw: {"type": "switch"} for sw in data_structure["switches"]})
+            params_spec.update({sw: {"type": "switch"} for sw in data_structure["switches"]})
 
         # Parse all key-value pairs like X80.0 Y80.0 etc.
         parameters = {}
@@ -75,32 +75,63 @@ class Parser:
             value = match[1]
 
             # Only include parameters that exist in structure
-            if letter in params.keys():
-                if params[letter]["type"] == "bool":
-                    v = True if int(value) == 1 else False
-                elif params[letter]["type"] == "switch":
-                    v = int(value)
-                else:
+            if letter not in params_spec:
+                continue
+
+            expected_type = params_spec[letter].get("type")
+            # boolean values may be printed as "1.0" so use float conversion
+            if expected_type == "bool":
+                try:
+                    v = float(value) == 1.0
+                except (ValueError, TypeError):
+                    # fallback: accept "1", "true" strings
+                    v = str(value).strip() in ("1", "true", "True")
+            elif expected_type == "switch":
+                # If numeric supplied, store as int. Otherwise treat as presence flag
+                try:
+                    v = int(float(value))
+                except (ValueError, TypeError):
+                    v = 1
+            else:
+                try:
                     v = float(value)
-                parameters[letter] = v
+                except (ValueError, TypeError):
+                    # safety fallback, keep raw
+                    v = value
 
-        # --- Fix: detect standalone switches (X, Y) without numeric values ---
+            parameters[letter] = v
+
+        # Handle switches that appear without numeric values.
         if "switches" in data_structure:
-            for sw in data_structure["switches"]:
-                # Only set switch if not already matched (avoid X1/X duplication)
-                if sw not in parameters and re.search(rf"\b{sw}\b", line):
-                    parameters[sw] = 1  # signal presence
+            switches = data_structure.get("switches", [])
+            switches_not_indexed = data_structure.get("switchesNotIndexed", False)
 
-        # --- Cleanup: remove 'X1', 'Y1' duplicates if both exist ---
-        for sw in data_structure.get("switches", []):
-            if f"{sw}1" in parameters and sw in parameters:
-                parameters.pop(f"{sw}1", None)
+            for sw in switches:
+                # If already parsed (e.g. X229), nothing to do
+                if sw in parameters:
+                    continue
+
+                # Detect a bare switch letter in the line (not followed by digit)
+                # e.g. matches " M593 X F57.00" or "M569 S1 X Y Z"
+                if re.search(rf"(?<!\w){sw}(?!\d)", line):
+                    parameters[sw] = 1
+
+                # If the parser accidentally produced an indexed key like "X1" and we are in
+                # switchesNotIndexed mode, move that value to "X"
+                if switches_not_indexed:
+                    # look for e.g. "X1" / "Y1" keys that might have been created elsewhere
+                    for suffix in ("1", "0"):
+                        keyed = f"{sw}{suffix}"
+                        if keyed in parameters:
+                            parameters[sw] = parameters.pop(keyed)
+                            break
 
         return {
             "name": command_name,
             "command": command,
             "params": parameters,
         }
+
 
     @staticmethod
     def is_marlin(name):
